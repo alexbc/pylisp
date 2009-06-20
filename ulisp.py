@@ -1,3 +1,35 @@
+import random
+
+noeval = ['macro', 'setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
+fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door, 'macro': macro, 'println': println, 'readln': readln}
+
+variables = {}
+macros = {}
+closures = {}
+currentclosure = 0
+closurestack = []
+
+def changeclosure(changeto): #change closures
+	global closures
+	global currentclosure
+	closures[currentclosure] = variables
+	variables = closures[changeto]
+	currentclosure = changeto
+	print "Changed closure to ", changeto
+	print "Vars = ", variables
+
+def makeclosureid():
+	global closures
+	while 1:
+		cid = random.randrange(0, 2**16)
+		if cid not in closures
+			return cid
+
+def makeclosure(): #make a new closure and switch to it
+	cid = makeclosureid()
+	closures[cid] = variables
+	currentclosure = cid
+	
 def simpletreeparse(inp):
 	"""Very simple Tree parser to seperate out sublists from lists"""
 	numbrackets = 0
@@ -93,7 +125,7 @@ def let(args):
 	name = args[0]
 	value = eval(args[1])
 	variables[name] = value
-	ret = eval(args[2])
+	ret = eval(args[2], variables)
 	variables = dict(oldvars) #force a deep copy so that we can have closures
 	return ret
 	
@@ -143,7 +175,8 @@ def fn(args):
 	body = args[1]
 	varsets = makelist(varsets)
 	print "Making new lambda"
-	print "Variables", variables, id(variables)
+	print "Variables", variables
+	
 
 	def newfunc(args, varsets, vars):
 		print "*LAMBDA EVAL*", args
@@ -166,12 +199,6 @@ def makelist(inp): #useful for fn and macros/etc. stuffs up lists of lists badly
         inp = inp.split(" ")
 	return inp
 	
-noeval = ['macro', 'setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
-
-fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door, 'macro': macro, 'println': println, 'readln': readln}
-variables = {}
-macros = {}
-
 def evallist(args):
 	print "*EVALLIST*", args
 	return map(eval, args)[-1]
