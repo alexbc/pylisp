@@ -4,6 +4,7 @@ def simpletreeparse(inp):
 	slab = ""
 	slabs = []
 	quotes = False
+	WHITESPACE = [' ', '\t', '\n']
 	for i in inp:
 		if i == "(" and not quotes:
 			numbrackets += 1
@@ -12,9 +13,10 @@ def simpletreeparse(inp):
 			numbrackets -= 1
 			slab += i
 		else:
-			if i == " " and numbrackets == 0 and not quotes:
-				slabs.append(slab)
-				slab = ""
+			if i in WHITESPACE and numbrackets == 0 and not quotes:
+				if slab != "":
+					slabs.append(slab)
+					slab = ""
 			else:
 				slab += i
 			if i == '"':
