@@ -102,8 +102,14 @@ def eval(inp, vars=variables):
 	
 	if inp[0] == "'": #this is quoted
 		inp = inp[1:]
-		print "*EVAL* Found quoted string '", inp, "'"
+		print "*EVAL* Found quote '", inp
+		return simpletreeparse(inp)
+
+	if inp[0] == '"' and inp[-1] == '"': #its a double quoted string
+		inp = inp[1:-1]
+		print "*EVAL* Found quoted string '" + inp + "'"
 		return inp
+		
 
 
 	tree = simpletreeparse(inp)
