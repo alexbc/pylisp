@@ -1,4 +1,4 @@
-inp = "((fn (x y) (+ x y)) 2 3) "
+inp = "(do (setq x (fn (x y) (+ x y))) (x 1 2))"
 
 def simpletreeparse(inp):
 	numbrackets = 0
@@ -35,7 +35,7 @@ def rest(args):
 def setq(args):
 	global variables
 	name = args[0]
-	value = args[1]
+	value = eval(args[1])
 	variables[name] = value
 	print name, value
 	return value
@@ -61,9 +61,8 @@ def fn(args):
 	varsets = varsets.replace(")", "") 
 	varsets = varsets.split(" ")
 
-	print "varsets", varsets
-	print "body", body
 	def newfunc(args):
+		print "*LAMBDA EVAL*", args
 		global variables
 		oldvars = variables
 		print args
@@ -73,11 +72,9 @@ def fn(args):
 			print i
 			variables[varsets[i]] = args[i]
 
-		print "Variables", variables
-		print "Body", body
 		ret = eval(body)
 		variables = oldvars
-		print "LAMBDA FUNCTION RAN", ret
+		print "*LAMBDA RET*", ret
 		return ret
 		
 
@@ -90,27 +87,29 @@ variables = {'x': 100}
 
 def eval(inp, vars=variables):
 	inp = inp.strip() #get rid of leading/trailing spaces
-
-	print "Evaling ", inp
-	if convertint(inp): #its an int
-		print "Found int", inp
-		return convertint(inp)
+	print "*EVAL* Evaling", inp
 
 	if inp in vars: #its a variable
-                print "Found variable ", inp, "=", vars[inp]
+                print "*EVAL* Found variable ", inp, "=", vars[inp]
                 return vars[inp]
 
-	inp = inp[1:-1].strip()
+	if convertint(inp): #its an int
+		print "*EVAL* Found int", inp
+		return convertint(inp)
+
+	if inp[0] == "(" and inp[-1] == ")": #this is a list, so strip it
+		inp = inp[1:-1].strip()
+	
 	if inp[0] == "'": #this is quoted
 		inp = inp[1:]
-		print "Found quoted string '", inp, "'"
+		print "*EVAL* Found quoted string '", inp, "'"
 		return inp
 
 
 	tree = simpletreeparse(inp)
 
-	function = tree[0]
-	args = tree[1:]
+	function = tree[0] #function is always the first argument
+	args = tree[1:] #arguments are the rest
 
 	print "function = ", function
 
@@ -125,12 +124,18 @@ def eval(inp, vars=variables):
 
 	if function not in noeval:
 		args = map(eval, args)
-	print "args = ", repr(args)
+	print "*EVAL* args = ", repr(args)
 	ret  = fn(args)
-	print "return value = ", ret
+	print "*EVAL* RETURNS ", ret
 	return ret
 
 	
 
-print eval(inp)
-print variables
+#print eval(inp)
+#print variables
+
+while 1:
+	inp = raw_input(">> ")
+	if inp == "":
+		break
+	print eval(inp)
