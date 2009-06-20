@@ -151,7 +151,7 @@ def let(args):
 	name = args[0]
 	value = eval(args[1])
 	variables[name] = value
-	ret = eval(args[2], variables)
+	ret = eval(args[2])
 	retclosure()
 	return ret
 	
@@ -205,17 +205,20 @@ def fn(args):
 	
 
 	def newfunc(args, varsets, cl):
+		global variables
 		closurestate() #tell us wtf is happening
 		changeclosure(cl) #change to the closure we should be in
 		makeclosure() #make this a new closure
 		print "*LAMBDA EVAL*", args
-		print "*LAMBDA VARS*", vars, id(vars)
+		print "*LAMBDA VARS*", variables
 		print "*LAMBDA VARSETS*", varsets
+		print "*LAMBDA ARGS*", args
+
 		for i in range(len(args)):
 			print i
-			vars[varsets[i]] = args[i]
+			variables[varsets[i]] = args[i]
 
-		ret = eval(body, vars)
+		ret = eval(body)
 		print "*LAMBDA RET*", ret
 		retclosure()
 		retclosure()
@@ -238,16 +241,14 @@ def evallist(args):
 noeval = ['macro', 'setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
 fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door, 'macro': macro, 'println': println, 'readln': readln}
 
-def eval(inp, vars=None):
-	if not vars:
-		vars = variables
-
+def eval(inp):
+	global variables
 	inp = inp.strip() #get rid of leading/trailing spaces
 	if not inp: #if we have nothing to do
 		return #return nothing
 
 	print "*EVAL* Evaling", inp
-	print "*EVAL* variables", vars
+	print "*EVAL* variables", variables
 	islist = (inp[0] == "(" and inp[-1] == ")")
 	if islist: #this is a list, so strip it
 		if len(simpletreeparse(inp)) > 1:
@@ -257,9 +258,9 @@ def eval(inp, vars=None):
                 inp = inp[1:-1].strip()
 
 	print "Stripped inp", inp
-	if inp in vars: #its a variable
-                print "*EVAL* Found variable ", inp, "=", vars[inp]
-                return vars[inp]
+	if inp in variables: #its a variable
+                print "*EVAL* Found variable ", inp, "=", variables[inp]
+                return variables[inp]
 
 	if convertint(inp): #its an int
 		print "*EVAL* Found int", inp
@@ -328,5 +329,5 @@ while 1:
 	inp = raw_input(">> ")
 	if inp == "":
 		break
-	print eval(inp, variables)
+	print eval(inp)
 	print variables
