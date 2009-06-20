@@ -1,5 +1,7 @@
 Simple python lisp interpreter
 
-Very unstable, not finished, doesn't work.
+Kind of working, has seen better days.
+
+Currently supports quite a few different operations.
 
 Use at your own risk
