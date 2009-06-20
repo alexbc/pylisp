@@ -24,10 +24,12 @@ class lambdafunction():
 		******""" % (self.body, self.closureid, self.varset)
 
 	def run(self, args):
+		closurestate()
 		global variables
 		closurestate()
 		changeclosure(self.closureid)
 		makeclosure()
+		closurestate()
 		
 		print str(self)
 		for i in range(len(args)):
@@ -89,6 +91,10 @@ def retclosure():
 		cid = currentclosure
 		while cid == currentclosure:
 			cid = closurestack.pop()
+			if closurestack == []:
+				cid = 0
+				break
+
 		print "Closure changed to", cid
 		changeclosure(cid)
 		
