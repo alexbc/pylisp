@@ -1,0 +1,4 @@
+Seperate everything into core + functions + REPL
+
+add \ as an escape character to the parser
+
