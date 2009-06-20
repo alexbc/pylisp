@@ -3,9 +3,9 @@ import random
 
 variables = {}
 macros = {}
-closures = {}
+closures = {0: variables}
 currentclosure = 0
-closurestack = []
+closurestack = [0]
 
 def closurestate():
 	print "**********"
@@ -20,7 +20,7 @@ def changeclosure(changeto): #change closures
 	global currentclosure
 	global variables
 
-	closures[currentclosure] = variables
+	closures[currentclosure] = dict(variables)
 	variables = closures[changeto]
 	currentclosure = changeto
 	print "Changed closure to ", changeto
@@ -37,23 +37,28 @@ def makeclosure(): #make a new closure and switch to it
 	global variables
 	global closures
 	global closurestack
+	global currentclosure
 
 	print "Making a new closure"
 	print variables
 	cid = makeclosureid()
-	closures[cid] = variables
-	currentclosure = cid
+	closures[cid] = dict(variables)
+	changeclosure(cid)
 	closurestack.append(cid)
 	print cid
 
 def retclosure():
 	global closurestack
-	
+	global currentclosure
+
 	print "Poping closure"
 	if closurestack != []:
-		cid = closurestack.pop()
-		print cid
+		cid = currentclosure
+		while cid == currentclosure:
+			cid = closurestack.pop()
+		print "Closure changed to", cid
 		changeclosure(cid)
+		
 
 	
 def simpletreeparse(inp):
@@ -148,10 +153,12 @@ def let(args):
 	assert len(args) == 3, "Need three args to let!"
 	global variables
 	makeclosure()
+	closurestate()
 	name = args[0]
 	value = eval(args[1])
 	variables[name] = value
 	ret = eval(args[2])
+	closurestate()
 	retclosure()
 	return ret
 	
@@ -206,6 +213,8 @@ def fn(args):
 
 	def newfunc(args, varsets, cl):
 		global variables
+		print "IN LAMBDA"
+
 		closurestate() #tell us wtf is happening
 		changeclosure(cl) #change to the closure we should be in
 		makeclosure() #make this a new closure
@@ -213,6 +222,7 @@ def fn(args):
 		print "*LAMBDA VARS*", variables
 		print "*LAMBDA VARSETS*", varsets
 		print "*LAMBDA ARGS*", args
+		print "*LAMBDA CL", cl
 
 		for i in range(len(args)):
 			print i
@@ -225,6 +235,10 @@ def fn(args):
 		
 		return ret
 		
+
+	print "MAKING LAMBDA"
+	print "CURRENT CLOSURE", currentclosure
+	print "VARSETS", varsets
 
 	return lambda x: newfunc(x, varsets, currentclosure)
 
@@ -331,3 +345,4 @@ while 1:
 		break
 	print eval(inp)
 	print variables
+	closurestate()
