@@ -272,6 +272,9 @@ def eval(inp):
 
 	logger.info("Evaling %s" ,inp)
 	logger.info("Have variables %r" , variables)
+        if inp.count("(") != inp.count(")"): #there is at least one mismatched bracket
+		logger.error("Mismatched brackets!")
+		return
 
 	inp = inp.strip() #get rid of leading/trailing spaces
 	if not inp: #if we have nothing to do
@@ -303,7 +306,7 @@ def eval(inp):
 		return inp
 	
 	if not islist: #this isn't a list, there really is nothing to do here
-		logger.info("Unknown symbol '%s'", inp)
+		logger.error("Unknown symbol '%s'", inp)
 		return
 		
 
@@ -398,6 +401,16 @@ def setupdebug(debugmode):
 
 
 	logging.basicConfig(filename=LOG_FILE,level=LEVELS[debugmode], filemode="w")
+	
+	console = logging.StreamHandler()
+	console.setLevel(logging.WARNING)
+	# set a format which is simpler for console use
+	formatter = logging.Formatter('%(levelname)-8s %(message)s')
+	# tell the handler to use this format
+	console.setFormatter(formatter)
+	# add the handler to the root logger
+	logging.getLogger('').addHandler(console)
+
 
 
 def main(argv):

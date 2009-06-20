@@ -1,10 +1,27 @@
-INFO:eval:Evaling (println "Test")
+INFO:eval:Evaling blah
 INFO:eval:Have variables {}
-INFO:eval:function = println
+ERROR:eval:Unknown symbol 'blah'
+INFO:eval:Evaling (setq x 10)
+INFO:eval:Have variables {}
+INFO:eval:function = setq
 INFO:eval:Found in function table
-INFO:eval:Evaling "Test"
+INFO:eval:args = ['x', '10']
+INFO:eval:Evaling 10
 INFO:eval:Have variables {}
-INFO:eval:Found quoted string 'Test'
-INFO:eval:args = ['Test']
-INFO:ulisp_core:Printed ['Test']
-INFO:eval:eval returns None 
+INFO:eval:Found int 10
+INFO:eval:eval returns 10 
+INFO:eval:Evaling x
+INFO:eval:Have variables {'x': 10}
+INFO:eval:Found variable x = 10
+INFO:eval:Evaling (+ x 2)
+INFO:eval:Have variables {'x': 10}
+INFO:eval:function = +
+INFO:eval:Found in function table
+INFO:eval:Evaling x
+INFO:eval:Have variables {'x': 10}
+INFO:eval:Found variable x = 10
+INFO:eval:Evaling 2
+INFO:eval:Have variables {'x': 10}
+INFO:eval:Found int 2
+INFO:eval:args = [10, 2]
+INFO:eval:eval returns 12 
