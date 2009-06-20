@@ -23,6 +23,37 @@ def simpletreeparse(inp):
 	slabs.append(slab)
 	return slabs
 
+def eq(args):
+	"""Equals, for any number of arguments"""
+
+	for i in range(len(args) - 1):
+		if eval(args[i]) != eval(args[i + 1]):
+			return False
+	return True
+
+def gth(args):
+	"""Greater than, for any number of arguments"""
+	for i in range(len(args) - 1):
+		if eval(args[i]) < eval(args[i + 1]):
+			return False
+	return True
+
+def lth(args):
+	"""Less than, for any number of arguments"""
+	return ((not gth(args)) and not (eq(args)))
+
+def doand(args):
+	for i in range(len(args) - 1):
+                if (not eval(args[i]) and eval(args[i + 1])):
+                        return False
+        return True
+
+def door(args):
+	for i in range(len(args) - 1):
+		if eval(args[i]):
+			return True
+	return False
+
 def plus(args):
 	return reduce(lambda x,y: x+y, args)
 
@@ -68,6 +99,14 @@ def do(args):
 def evalwrapper(args):
 	return map(eval, args)
 
+def doif(args):
+	assert len(args) == 3, "Must have three arguments to if"
+	expr = eval(args[0])
+	if expr:
+		return eval(args[1])
+	else:
+		return eval(args[2])
+
 def fn(args):
 	assert len(args) == 2, "ERROR fn requires 2 arguments!"
 	varsets = args[0]
@@ -95,9 +134,9 @@ def fn(args):
 
 	return newfunc
 
-noeval = ['setq', 'let', 'lambda', 'eval']
+noeval = ['setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
 
-fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let}
+fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door}
 variables = {}
 
 def eval(inp, vars=variables):
@@ -107,6 +146,7 @@ def eval(inp, vars=variables):
 	if islist: #this is a list, so strip it
                 inp = inp[1:-1].strip()
 
+	print "Stripped inp", inp
 	if inp in vars: #its a variable
                 print "*EVAL* Found variable ", inp, "=", vars[inp]
                 return vars[inp]
@@ -115,7 +155,6 @@ def eval(inp, vars=variables):
 		print "*EVAL* Found int", inp
 		return convertint(inp)
 
-	
 	if inp[0] == "'": #this is quoted
 		inp = inp[1:]
 		print "*EVAL* Found quote '", inp
@@ -154,10 +193,6 @@ def eval(inp, vars=variables):
 	return ret
 
 	
-
-#print eval(inp)
-#print variables
-
 while 1:
 	inp = raw_input(">> ")
 	if inp == "":
