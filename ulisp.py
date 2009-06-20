@@ -1,11 +1,44 @@
 import random
-
+from types import FunctionType
 
 variables = {}
 macros = {}
 closures = {0: variables}
 currentclosure = 0
 closurestack = [0]
+
+
+
+class lambdafunction():
+	def __init__(self, body, closureid, varset):
+		self.body = body
+		self.closureid = closureid
+		self.varset = varset
+	def __str__(self):
+		return """
+		******
+		I am a lambda function
+		Body %s
+		closureid %s
+		Varset %s
+		******""" % (self.body, self.closureid, self.varset)
+
+	def run(self, args):
+		global variables
+		closurestate()
+		changeclosure(cl)
+		makeclosure()
+		
+		print str(self)
+		for i in range(len(args)):
+                        print i
+                        variables[self.varsets[i]] = args[i]
+
+		ret = eval(self.body)
+		retclosure()
+		
+		return ret
+
 
 def closurestate():
 	print "**********"
@@ -211,36 +244,38 @@ def fn(args):
 	print "Variables", variables
 	
 
-	def newfunc(args, varsets, cl):
-		global variables
-		print "IN LAMBDA"
+	#def newfunc(args, varsets, cl):
+#		global variables
+#		print "IN LAMBDA"
 
-		closurestate() #tell us wtf is happening
-		changeclosure(cl) #change to the closure we should be in
-		makeclosure() #make this a new closure
-		print "*LAMBDA EVAL*", args
-		print "*LAMBDA VARS*", variables
-		print "*LAMBDA VARSETS*", varsets
-		print "*LAMBDA ARGS*", args
-		print "*LAMBDA CL", cl
-
-		for i in range(len(args)):
-			print i
-			variables[varsets[i]] = args[i]
-
-		ret = eval(body)
-		print "*LAMBDA RET*", ret
-		retclosure()
-		retclosure()
-		
-		return ret
+#		closurestate() #tell us wtf is happening
+#		changeclosure(cl) #change to the closure we should be in
+#		makeclosure() #make this a new closure
+#		print "*LAMBDA EVAL*", args
+#		print "*LAMBDA VARS*", variables
+#		print "*LAMBDA VARSETS*", varsets
+#		print "*LAMBDA ARGS*", args
+#		print "*LAMBDA CL", cl
+#
+#		for i in range(len(args)):
+#			print i
+#			variables[varsets[i]] = args[i]
+#
+#		ret = eval(body)
+#		print "*LAMBDA RET*", ret
+#		retclosure()
+#		retclosure()
+#		
+#		return ret
 		
 
 	print "MAKING LAMBDA"
 	print "CURRENT CLOSURE", currentclosure
 	print "VARSETS", varsets
 
-	return lambda x: newfunc(x, varsets, currentclosure)
+	lam = lambdafunction(body, currentclosure, varsets)
+	print lam
+	return lam.run
 
 def makelist(inp): #useful for fn and macros/etc. stuffs up lists of lists badly
 	inp = inp.replace("(", "") #remove brackets to allow varsets to be parsed properly
@@ -301,11 +336,13 @@ def eval(inp):
 	args = tree[1:] #arguments are the rest
 
 	print "function = ", function
+	print "Eval(function) = ", eval(function)
+	print "type(function)", type(function)
 
 	if function in fns:
 		fn = fns[function]
 		print "Found in function table"
-	elif type(eval(function)) == type(lambda x:x): #we've been given an actual function to run
+	elif isinstance(eval(function), FunctionType): #we've been given an actual function to run
 		fn = eval(function)
 		print "Is a lambda function"
 	elif function in macros:
