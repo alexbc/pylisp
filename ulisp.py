@@ -26,13 +26,13 @@ class lambdafunction():
 	def run(self, args):
 		global variables
 		closurestate()
-		changeclosure(cl)
+		changeclosure(self.closureid)
 		makeclosure()
 		
 		print str(self)
 		for i in range(len(args)):
                         print i
-                        variables[self.varsets[i]] = args[i]
+                        variables[self.varset[i]] = args[i]
 
 		ret = eval(self.body)
 		retclosure()
@@ -287,6 +287,7 @@ def evallist(args):
 	print "*EVALLIST*", args
 	return map(eval, args)[-1]
 
+
 noeval = ['macro', 'setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
 fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door, 'macro': macro, 'println': println, 'readln': readln}
 
@@ -336,13 +337,11 @@ def eval(inp):
 	args = tree[1:] #arguments are the rest
 
 	print "function = ", function
-	print "Eval(function) = ", eval(function)
-	print "type(function)", type(function)
 
 	if function in fns:
 		fn = fns[function]
 		print "Found in function table"
-	elif isinstance(eval(function), FunctionType): #we've been given an actual function to run
+	elif callable(eval(function)): #we've been given an actual function to run
 		fn = eval(function)
 		print "Is a lambda function"
 	elif function in macros:
