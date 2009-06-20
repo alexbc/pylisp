@@ -140,12 +140,20 @@ noeval = ['setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
 
 fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door}
 variables = {}
+macros = {'testmacro' : {'body': '(do (setq x 3) (setq y 4))', 'args': ['x', 'y']}}
+
+def evallist(args):
+	return map(eval, args)[-1]
 
 def eval(inp, vars=variables):
 	inp = inp.strip() #get rid of leading/trailing spaces
 	print "*EVAL* Evaling", inp
 	islist = (inp[0] == "(" and inp[-1] == ")")
 	if islist: #this is a list, so strip it
+		if inp.count("(") > 1:
+			#this isn't one list, its many!
+			print evallist(simpletreeparse(inp))
+			return
                 inp = inp[1:-1].strip()
 
 	print "Stripped inp", inp
@@ -168,7 +176,8 @@ def eval(inp, vars=variables):
 		return inp
 	
 	if not islist: #this isn't a list, there really is nothing to do here
-		assert False, "Unknown symbol %s" % inp
+		print "Unknown symbol", inp
+		return
 		
 
 	tree = simpletreeparse(inp)
@@ -180,8 +189,14 @@ def eval(inp, vars=variables):
 
 	if function in fns:
 		fn = fns[function]
+		print "Found in function table"
 	elif type(eval(function)) == type(lambda x:x): #we've been given an actual function to run
 		fn = eval(function)
+		print "Is a lambda function"
+	elif function in macros:
+		#do macro expansion, so expand it and eval it
+		print "Is a macro"
+		return eval(macroexpand(macros[function]['body'],  macros[function]['args'], args))
 	else:
 		print "Not a function", function
 		tree = map(eval, tree)
@@ -194,7 +209,21 @@ def eval(inp, vars=variables):
 	print "*EVAL* RETURNS ", ret
 	return ret
 
-	
+
+def macroexpand(body, arglist, args):
+	"""Expand macros, todo: FIXME"""
+
+	WHITESPACE = [' ', '\n', '\t']
+	for white in WHITESPACE:
+		body = body.replace(white, ' ')
+
+	for i in range(len(arglist)):
+		body = body.replace(" " + arglist[i] + " ", " " + args[i] + " ")
+
+	print "*MACRO* Expanded to", body
+	return body
+
+
 while 1:
 	inp = raw_input(">> ")
 	if inp == "":
