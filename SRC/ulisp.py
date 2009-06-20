@@ -12,7 +12,6 @@ currentclosure = 0
 closurestack = [0]
 
 LOG_FILE = "Log.txt"
-#logging.basicConfig(filename=LOG_FILE,level=logging.DEBUG,filemode='w')
 logger = logging.getLogger("ulisp_core")
 
 class lambdafunction():
@@ -38,7 +37,6 @@ class lambdafunction():
 		closurestate()
 		
 		for i in range(len(args)):
-                        print i
                         variables[self.varset[i]] = args[i]
 
 		ret = eval(self.body)
@@ -230,7 +228,11 @@ def macro(args):
 	macros[macroname] = {'body': body, 'args': arglist}
 
 def println(args):
-	print " ".join([str(x) for x in args])
+	global logger
+	output = " ".join([str(x) for x in args])
+	print output
+	logger.info("Printed %r", args)
+	
 
 def readln(args):
 	prmpt = ""
@@ -246,7 +248,6 @@ def fn(args):
 	varsets = makelist(varsets)
 
 	lam = lambdafunction(body, currentclosure, varsets)
-	print lam
 	return lam.run
 
 def makelist(inp): #useful for fn and macros/etc. stuffs up lists of lists badly
@@ -256,7 +257,8 @@ def makelist(inp): #useful for fn and macros/etc. stuffs up lists of lists badly
 	return inp
 	
 def evallist(args):
-	print "*EVALLIST*", args
+	global logger
+	logger.info("EVALLIST evaling %r", args)
 	return map(eval, args)[-1]
 
 
@@ -337,6 +339,9 @@ def eval(inp):
 
 def macroexpand(body, arglist, args):
 	"""Expand macros, todo: FIXME"""
+	global logging
+        logger = logging.getLogger("eval")
+        logger.info("Macro body %r arglist %r args %r", body, arglist, args)
 
 	WHITESPACE = [' ', '\n', '\t']
 	for white in WHITESPACE:
@@ -345,7 +350,7 @@ def macroexpand(body, arglist, args):
 	for i in range(len(arglist)):
 		body = body.replace(" " + arglist[i] + " ", " " + args[i] + " ")
 
-	print "*MACRO* Expanded to", body
+	logger.info("Expanded to %s", body)
 	return body
 
 
@@ -372,6 +377,9 @@ def usage():
 	-f (file) to run from a file and exit
 	-d (debug) to change the debug settings from default
 	-p (prelude) run file before starting the REPL
+	-l (logfile) change output log file
+
+	For more information please consult the documentation
 	"""
 	sys.exit()
 
@@ -393,8 +401,9 @@ def setupdebug(debugmode):
 
 
 def main(argv):
+	global LOG_FILE
 	try:
-        	opts, args = getopt.getopt(argv, "hifdrp", ["help", "interactive", "file=", "debug=", "run=", "prelude="])
+        	opts, args = getopt.getopt(argv, "hifdrpl", ["help", "interactive", "file=", "debug=", "run=", "prelude=", "logfile="])
 	except getopt.GetoptError, err:
 		usage() #if they give us bad arguments, give them a usage message
 	
@@ -414,6 +423,8 @@ def main(argv):
 				usage()
 		elif o == "--prelude":
 			runfile(a)
+		elif o == "--logfile":
+			LOG_FILE = a
 	
 	#once everything is processed, set up the log files and run the REPL
 	setupdebug(debugmode)
