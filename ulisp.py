@@ -1,6 +1,5 @@
-inp = "(do (setq x (fn (x y) (+ x y))) (x 1 2))"
-
 def simpletreeparse(inp):
+	"""Very simple Tree parser to seperate out sublists from lists"""
 	numbrackets = 0
 	slab = ""
 	slabs = []
@@ -37,7 +36,7 @@ def rest(args):
 	return args[1:]
 
 def setq(args):
-	assert len(args) == 1, "Need two args to setQ!"
+	assert len(args) == 2, "Need two args to setQ!"
 	global variables
 	name = args[0]
 	value = eval(args[1])
@@ -46,14 +45,15 @@ def setq(args):
 	return value
 
 def let(args):
-	assert len(args) == 2, "Need three args to let!"
+	assert len(args) == 3, "Need three args to let!"
 	global variables
 	oldvars = variables
 	name = args[0]
 	value = eval(args[1])
 	variables[name] = value
-	eval(args[2])
+	ret = eval(args[2])
 	variables = oldvars
+	return ret
 	
 
 def convertint(inp):
@@ -66,8 +66,7 @@ def do(args):
 	return args[-1]
 
 def evalwrapper(args):
-	print "EVALARGS", args
-	return map(eval, ["(" + x + ")" for x in args])
+	return map(eval, args)
 
 def fn(args):
 	assert len(args) == 2, "ERROR fn requires 2 arguments!"
@@ -96,10 +95,10 @@ def fn(args):
 
 	return newfunc
 
-noeval = ['setq', 'lambda']
+noeval = ['setq', 'let', 'lambda', 'eval']
 
-fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn}
-variables = {'x': 100}
+fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let}
+variables = {}
 
 def eval(inp, vars=variables):
 	inp = inp.strip() #get rid of leading/trailing spaces
