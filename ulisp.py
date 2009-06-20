@@ -12,6 +12,10 @@ def simpletreeparse(inp):
 		elif i == ")" and not quotes:
 			numbrackets -= 1
 			slab += i
+			if numbrackets == 0: #if, we've just closed brackets and are now on the last scope
+				slabs.append(slab) #then treat it like a deliminator
+				slab = ""
+
 		else:
 			if i in WHITESPACE and numbrackets == 0 and not quotes:
 				if slab != "":
@@ -22,7 +26,12 @@ def simpletreeparse(inp):
 			if i == '"':
 				quotes = not quotes
 
-	slabs.append(slab)
+	if slab != "":
+		slabs.append(slab)
+
+	slabs = [x.strip() for x in slabs] #get rid of any dangling whitespace
+	slabs = [x for x in slabs if x != ""] #and get rid of any null entries
+
 	return slabs
 
 def eq(args):
@@ -109,13 +118,29 @@ def doif(args):
 	else:
 		return eval(args[2])
 
+def macro(args):
+	assert len(args) == 3, "Must have three arguments for macro"
+	macroname =  args[0]
+	arglist = makelist(args[1])
+	body =  args[2]
+	macros[macroname] = {'body': body, 'args': arglist}
+	print macros[macroname]
+
+def println(args):
+	print " ".join([str(x) for x in args])
+
+def readln(args):
+	prmpt = ""
+	print args, len(args)
+	if len(args) > 0:
+		prmpt = args[0]
+	return raw_input(prmpt)
+
 def fn(args):
 	assert len(args) == 2, "ERROR fn requires 2 arguments!"
 	varsets = args[0]
 	body = args[1]
-	varsets = varsets.replace("(", "") #remove brackets to allow varsets to be parsed properly
-	varsets = varsets.replace(")", "") 
-	varsets = varsets.split(" ")
+	varsets = makelist(varsets)
 
 	def newfunc(args):
 		print "*LAMBDA EVAL*", args
@@ -136,24 +161,34 @@ def fn(args):
 
 	return newfunc
 
-noeval = ['setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
+def makelist(inp): #useful for fn and macros/etc. stuffs up lists of lists badly
+	inp = inp.replace("(", "") #remove brackets to allow varsets to be parsed properly
+        inp = inp.replace(")", "")
+        inp = inp.split(" ")
+	return inp
+	
+noeval = ['macro', 'setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
 
-fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door}
+fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door, 'macro': macro, 'println': println, 'readln': readln}
 variables = {}
-macros = {'testmacro' : {'body': '(do (setq x 3) (setq y 4))', 'args': ['x', 'y']}}
+macros = {}
 
 def evallist(args):
+	print "*EVALLIST*", args
 	return map(eval, args)[-1]
 
 def eval(inp, vars=variables):
 	inp = inp.strip() #get rid of leading/trailing spaces
+	if not inp: #if we have nothing to do
+		return #return nothing
+
 	print "*EVAL* Evaling", inp
 	islist = (inp[0] == "(" and inp[-1] == ")")
 	if islist: #this is a list, so strip it
-		if inp.count("(") > 1:
+		if len(simpletreeparse(inp)) > 1:
+			print "MUTLILIST"
 			#this isn't one list, its many!
-			print evallist(simpletreeparse(inp))
-			return
+			return evallist(simpletreeparse(inp))
                 inp = inp[1:-1].strip()
 
 	print "Stripped inp", inp
