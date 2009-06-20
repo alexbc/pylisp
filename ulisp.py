@@ -1,7 +1,5 @@
 import random
 
-noeval = ['macro', 'setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
-fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door, 'macro': macro, 'println': println, 'readln': readln}
 
 variables = {}
 macros = {}
@@ -9,9 +7,19 @@ closures = {}
 currentclosure = 0
 closurestack = []
 
+def closurestate():
+	print "**********"
+	print "Variables", variables
+	print "closures", closures
+	print "Currentclosure", currentclosure
+	print "Closurestack", closurestack
+	print "***********"
+
 def changeclosure(changeto): #change closures
 	global closures
 	global currentclosure
+	global variables
+
 	closures[currentclosure] = variables
 	variables = closures[changeto]
 	currentclosure = changeto
@@ -22,13 +30,31 @@ def makeclosureid():
 	global closures
 	while 1:
 		cid = random.randrange(0, 2**16)
-		if cid not in closures
+		if cid not in closures:
 			return cid
 
 def makeclosure(): #make a new closure and switch to it
+	global variables
+	global closures
+	global closurestack
+
+	print "Making a new closure"
+	print variables
 	cid = makeclosureid()
 	closures[cid] = variables
 	currentclosure = cid
+	closurestack.append(cid)
+	print cid
+
+def retclosure():
+	global closurestack
+	
+	print "Poping closure"
+	if closurestack != []:
+		cid = closurestack.pop()
+		print cid
+		changeclosure(cid)
+
 	
 def simpletreeparse(inp):
 	"""Very simple Tree parser to seperate out sublists from lists"""
@@ -121,12 +147,12 @@ def setq(args):
 def let(args):
 	assert len(args) == 3, "Need three args to let!"
 	global variables
-	oldvars = dict(variables)
+	makeclosure()
 	name = args[0]
 	value = eval(args[1])
 	variables[name] = value
 	ret = eval(args[2], variables)
-	variables = dict(oldvars) #force a deep copy so that we can have closures
+	retclosure()
 	return ret
 	
 
@@ -169,7 +195,7 @@ def readln(args):
 	return raw_input(prmpt)
 
 def fn(args):
-	global variables
+	global variables, currentclosure
 	assert len(args) == 2, "ERROR fn requires 2 arguments!"
 	varsets = args[0]
 	body = args[1]
@@ -178,7 +204,10 @@ def fn(args):
 	print "Variables", variables
 	
 
-	def newfunc(args, varsets, vars):
+	def newfunc(args, varsets, cl):
+		closurestate() #tell us wtf is happening
+		changeclosure(cl) #change to the closure we should be in
+		makeclosure() #make this a new closure
 		print "*LAMBDA EVAL*", args
 		print "*LAMBDA VARS*", vars, id(vars)
 		print "*LAMBDA VARSETS*", varsets
@@ -188,10 +217,13 @@ def fn(args):
 
 		ret = eval(body, vars)
 		print "*LAMBDA RET*", ret
+		retclosure()
+		retclosure()
+		
 		return ret
 		
 
-	return lambda x: newfunc(x, varsets, variables)
+	return lambda x: newfunc(x, varsets, currentclosure)
 
 def makelist(inp): #useful for fn and macros/etc. stuffs up lists of lists badly
 	inp = inp.replace("(", "") #remove brackets to allow varsets to be parsed properly
@@ -202,6 +234,9 @@ def makelist(inp): #useful for fn and macros/etc. stuffs up lists of lists badly
 def evallist(args):
 	print "*EVALLIST*", args
 	return map(eval, args)[-1]
+
+noeval = ['macro', 'setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
+fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door, 'macro': macro, 'println': println, 'readln': readln}
 
 def eval(inp, vars=None):
 	if not vars:
