@@ -1,3 +1,4 @@
+#!/usr/bin/env python2.5
 import random
 from types import FunctionType
 import logging
@@ -398,7 +399,7 @@ def main(argv):
 		usage() #if they give us bad arguments, give them a usage message
 	
 	#process arguments
-	debugmode = "DEBUG"
+	debugmode = "debug"
 
 	for o, a in opts:
 		if o in ("-h", "--help"):
