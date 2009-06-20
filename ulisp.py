@@ -89,12 +89,12 @@ def setq(args):
 def let(args):
 	assert len(args) == 3, "Need three args to let!"
 	global variables
-	oldvars = variables
+	oldvars = dict(variables)
 	name = args[0]
 	value = eval(args[1])
 	variables[name] = value
 	ret = eval(args[2])
-	variables = oldvars
+	variables = dict(oldvars) #force a deep copy so that we can have closures
 	return ret
 	
 
@@ -137,29 +137,28 @@ def readln(args):
 	return raw_input(prmpt)
 
 def fn(args):
+	global variables
 	assert len(args) == 2, "ERROR fn requires 2 arguments!"
 	varsets = args[0]
 	body = args[1]
 	varsets = makelist(varsets)
+	print "Making new lambda"
+	print "Variables", variables, id(variables)
 
-	def newfunc(args):
+	def newfunc(args, varsets, vars):
 		print "*LAMBDA EVAL*", args
-		global variables
-		oldvars = variables
-		print args
-		print variables
-		print varsets
+		print "*LAMBDA VARS*", vars, id(vars)
+		print "*LAMBDA VARSETS*", varsets
 		for i in range(len(args)):
 			print i
-			variables[varsets[i]] = args[i]
+			vars[varsets[i]] = args[i]
 
-		ret = eval(body)
-		variables = oldvars
+		ret = eval(body, vars)
 		print "*LAMBDA RET*", ret
 		return ret
 		
 
-	return newfunc
+	return lambda x: newfunc(x, varsets, variables)
 
 def makelist(inp): #useful for fn and macros/etc. stuffs up lists of lists badly
 	inp = inp.replace("(", "") #remove brackets to allow varsets to be parsed properly
@@ -177,12 +176,16 @@ def evallist(args):
 	print "*EVALLIST*", args
 	return map(eval, args)[-1]
 
-def eval(inp, vars=variables):
+def eval(inp, vars=None):
+	if not vars:
+		vars = variables
+
 	inp = inp.strip() #get rid of leading/trailing spaces
 	if not inp: #if we have nothing to do
 		return #return nothing
 
 	print "*EVAL* Evaling", inp
+	print "*EVAL* variables", vars
 	islist = (inp[0] == "(" and inp[-1] == ")")
 	if islist: #this is a list, so strip it
 		if len(simpletreeparse(inp)) > 1:
@@ -263,4 +266,5 @@ while 1:
 	inp = raw_input(">> ")
 	if inp == "":
 		break
-	print eval(inp)
+	print eval(inp, variables)
+	print variables
