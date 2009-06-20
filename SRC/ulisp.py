@@ -1,5 +1,8 @@
 import random
 from types import FunctionType
+import logging
+import sys
+import getopt
 
 variables = {}
 macros = {}
@@ -7,7 +10,9 @@ closures = {0: variables}
 currentclosure = 0
 closurestack = [0]
 
-
+LOG_FILE = "Log.txt"
+#logging.basicConfig(filename=LOG_FILE,level=logging.DEBUG,filemode='w')
+logger = logging.getLogger("ulisp_core")
 
 class lambdafunction():
 	def __init__(self, body, closureid, varset):
@@ -31,7 +36,6 @@ class lambdafunction():
 		makeclosure()
 		closurestate()
 		
-		print str(self)
 		for i in range(len(args)):
                         print i
                         variables[self.varset[i]] = args[i]
@@ -43,12 +47,12 @@ class lambdafunction():
 
 
 def closurestate():
-	print "**********"
-	print "Variables", variables
-	print "closures", closures
-	print "Currentclosure", currentclosure
-	print "Closurestack", closurestack
-	print "***********"
+	global logging
+	logger = logging.getLogger("closure")
+	logger.info("Variables = %r", variables)
+	logger.info("closures = %r", closures)
+	logger.info("Currentclosure = %s", currentclosure)
+	logger.info("Closurestack = %s", closurestack)
 
 def changeclosure(changeto): #change closures
 	global closures
@@ -58,8 +62,6 @@ def changeclosure(changeto): #change closures
 	closures[currentclosure] = dict(variables)
 	variables = closures[changeto]
 	currentclosure = changeto
-	print "Changed closure to ", changeto
-	print "Vars = ", variables
 
 def makeclosureid():
 	global closures
@@ -74,19 +76,15 @@ def makeclosure(): #make a new closure and switch to it
 	global closurestack
 	global currentclosure
 
-	print "Making a new closure"
-	print variables
 	cid = makeclosureid()
 	closures[cid] = dict(variables)
 	changeclosure(cid)
 	closurestack.append(cid)
-	print cid
 
 def retclosure():
 	global closurestack
 	global currentclosure
 
-	print "Poping closure"
 	if closurestack != []:
 		cid = currentclosure
 		while cid == currentclosure:
@@ -95,7 +93,6 @@ def retclosure():
 				cid = 0
 				break
 
-		print "Closure changed to", cid
 		changeclosure(cid)
 		
 
@@ -170,6 +167,9 @@ def door(args):
 def plus(args):
 	return reduce(lambda x,y: x+y, args)
 
+def times(args):
+	return reduce(lambda x,y: x*y, args)
+
 def cons(args):
 	return reduce(lambda x,y: x+y, args)
 	
@@ -185,7 +185,6 @@ def setq(args):
 	name = args[0]
 	value = eval(args[1])
 	variables[name] = value
-	print name, value
 	return value
 
 def let(args):
@@ -228,14 +227,12 @@ def macro(args):
 	arglist = makelist(args[1])
 	body =  args[2]
 	macros[macroname] = {'body': body, 'args': arglist}
-	print macros[macroname]
 
 def println(args):
 	print " ".join([str(x) for x in args])
 
 def readln(args):
 	prmpt = ""
-	print args, len(args)
 	if len(args) > 0:
 		prmpt = args[0]
 	return raw_input(prmpt)
@@ -246,38 +243,6 @@ def fn(args):
 	varsets = args[0]
 	body = args[1]
 	varsets = makelist(varsets)
-	print "Making new lambda"
-	print "Variables", variables
-	
-
-	#def newfunc(args, varsets, cl):
-#		global variables
-#		print "IN LAMBDA"
-
-#		closurestate() #tell us wtf is happening
-#		changeclosure(cl) #change to the closure we should be in
-#		makeclosure() #make this a new closure
-#		print "*LAMBDA EVAL*", args
-#		print "*LAMBDA VARS*", variables
-#		print "*LAMBDA VARSETS*", varsets
-#		print "*LAMBDA ARGS*", args
-#		print "*LAMBDA CL", cl
-#
-#		for i in range(len(args)):
-#			print i
-#			variables[varsets[i]] = args[i]
-#
-#		ret = eval(body)
-#		print "*LAMBDA RET*", ret
-#		retclosure()
-#		retclosure()
-#		
-#		return ret
-		
-
-	print "MAKING LAMBDA"
-	print "CURRENT CLOSURE", currentclosure
-	print "VARSETS", varsets
 
 	lam = lambdafunction(body, currentclosure, varsets)
 	print lam
@@ -295,45 +260,47 @@ def evallist(args):
 
 
 noeval = ['macro', 'setq', 'let', 'lambda', 'eval', 'if', 'and' 'or', '>', '<', '=']
-fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door, 'macro': macro, 'println': println, 'readln': readln}
+fns = {'+' : plus, 'setq' : setq, 'cons' : cons, 'first': first, 'rest':rest, 'do': do, 'eval' : evalwrapper, 'lambda':fn, 'let': let, '=' : eq, '>' : gth, '<': lth, 'if' : doif, 'and': doand, 'or' : door, 'macro': macro, 'println': println, 'readln': readln, '*': times}
 
 def eval(inp):
 	global variables
+	global logging
+	logger = logging.getLogger("eval")
+
+	logger.info("Evaling %s" ,inp)
+	logger.info("Have variables %r" , variables)
+
 	inp = inp.strip() #get rid of leading/trailing spaces
 	if not inp: #if we have nothing to do
 		return #return nothing
 
-	print "*EVAL* Evaling", inp
-	print "*EVAL* variables", variables
 	islist = (inp[0] == "(" and inp[-1] == ")")
 	if islist: #this is a list, so strip it
 		if len(simpletreeparse(inp)) > 1:
-			print "MUTLILIST"
 			#this isn't one list, its many!
 			return evallist(simpletreeparse(inp))
                 inp = inp[1:-1].strip()
 
-	print "Stripped inp", inp
 	if inp in variables: #its a variable
-                print "*EVAL* Found variable ", inp, "=", variables[inp]
+                logger.info("Found variable %s = %r", inp, variables[inp]) #%r = repr
                 return variables[inp]
 
 	if convertint(inp): #its an int
-		print "*EVAL* Found int", inp
+		logger.info("Found int %s", inp)
 		return convertint(inp)
 
 	if inp[0] == "'": #this is quoted
 		inp = inp[1:]
-		print "*EVAL* Found quote '", inp
+		logger.info("Found quote '%s", inp)
 		return simpletreeparse(inp)
 
 	if inp[0] == '"' and inp[-1] == '"' and inp.count('"') == 2: #its a double quoted string
 		inp = inp[1:-1]
-		print "*EVAL* Found quoted string '" + inp + "'"
+		logger.info("Found quoted string '%s'", inp)
 		return inp
 	
 	if not islist: #this isn't a list, there really is nothing to do here
-		print "Unknown symbol", inp
+		logger.info("Unknown symbol '%s'", inp)
 		return
 		
 
@@ -342,28 +309,28 @@ def eval(inp):
 	function = tree[0] #function is always the first argument
 	args = tree[1:] #arguments are the rest
 
-	print "function = ", function
+	logger.info("function = %s", str(function))
 
 	if function in fns:
 		fn = fns[function]
-		print "Found in function table"
+		logger.info("Found in function table")
 	elif callable(eval(function)): #we've been given an actual function to run
 		fn = eval(function)
-		print "Is a lambda function"
+		logger.info("Is a lambda function")
 	elif function in macros:
 		#do macro expansion, so expand it and eval it
-		print "Is a macro"
+		logger.info("Is a macro")
 		return eval(macroexpand(macros[function]['body'],  macros[function]['args'], args))
 	else:
-		print "Not a function", function
+		logger.info("Not a function %s!", function)
 		tree = map(eval, tree)
 		return tree
 
 	if function not in noeval:
 		args = map(eval, args)
-	print "*EVAL* args = ", repr(args)
+	logger.info("args = %r", args)
 	ret  = fn(args)
-	print "*EVAL* RETURNS ", ret
+	logger.info("eval returns %r ", ret)
 	return ret
 
 
@@ -381,10 +348,76 @@ def macroexpand(body, arglist, args):
 	return body
 
 
-while 1:
-	inp = raw_input(">> ")
-	if inp == "":
-		break
-	print eval(inp)
-	print variables
-	closurestate()
+def REPL():
+	print "Welcome to Ulisp v0"
+	print "Please enter a Sexpression into the console below"
+	print "Type a blank line to exit"
+	print
+
+	while 1:
+		inp = raw_input(">> ")
+		if inp == "":
+			break
+		print eval(inp)
+
+	print "Thank you for flying lisp"
+	print
+
+def usage():
+	print """Usage
+	-h (help) For help (this message)
+	-i (interactive) for  REPL (default)
+	-r (run) to run an expression and exit
+	-f (file) to run from a file and exit
+	-d (debug) to change the debug settings from default
+	-p (prelude) run file before starting the REPL
+	"""
+	sys.exit()
+
+def runfile(fname):
+	print eval(open(fname).read())
+
+def setupdebug(debugmode):
+	global logging
+	global LOG_FILE
+	
+	LEVELS = {'debug': logging.DEBUG,
+          'info': logging.INFO,
+          'warning': logging.WARNING,
+          'error': logging.ERROR,
+          'critical': logging.CRITICAL}
+
+
+	logging.basicConfig(filename=LOG_FILE,level=LEVELS[debugmode], filemode="w")
+
+
+def main(argv):
+	try:
+        	opts, args = getopt.getopt(argv, "hifdrp", ["help", "interactive", "file=", "debug=", "run=", "prelude="])
+	except getopt.GetoptError, err:
+		usage() #if they give us bad arguments, give them a usage message
+	
+	#process arguments
+	debugmode = "DEBUG"
+
+	for o, a in opts:
+		if o in ("-h", "--help"):
+			usage()
+		elif o in ("-r", "--run"):
+			runfile(a)
+			sys.exit()
+		elif o == "--debug":
+			if a in ['debug', 'info', 'warning', 'error', 'critical']:
+				debugmode = a
+			else:
+				usage()
+		elif o == "--prelude":
+			runfile(a)
+	
+	#once everything is processed, set up the log files and run the REPL
+	setupdebug(debugmode)
+	REPL()
+			
+
+if __name__ == "__main__":
+	main(sys.argv[1:])	

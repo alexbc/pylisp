@@ -1,0 +1,27 @@
+INFO:eval:Evaling (+ 1 2 3 4 5 6 7)
+INFO:eval:Have variables {}
+INFO:eval:function = +
+INFO:eval:Found in function table
+INFO:eval:Evaling 1
+INFO:eval:Have variables {}
+INFO:eval:Found int 1
+INFO:eval:Evaling 2
+INFO:eval:Have variables {}
+INFO:eval:Found int 2
+INFO:eval:Evaling 3
+INFO:eval:Have variables {}
+INFO:eval:Found int 3
+INFO:eval:Evaling 4
+INFO:eval:Have variables {}
+INFO:eval:Found int 4
+INFO:eval:Evaling 5
+INFO:eval:Have variables {}
+INFO:eval:Found int 5
+INFO:eval:Evaling 6
+INFO:eval:Have variables {}
+INFO:eval:Found int 6
+INFO:eval:Evaling 7
+INFO:eval:Have variables {}
+INFO:eval:Found int 7
+INFO:eval:args = [1, 2, 3, 4, 5, 6, 7]
+INFO:eval:eval returns 28 
