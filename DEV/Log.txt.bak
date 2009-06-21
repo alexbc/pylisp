@@ -1,0 +1,124 @@
+INFO:eval:Evaling (let x 2 (lambda z (setq x z)))
+INFO:eval:Have variables {}
+INFO:eval:function = let
+INFO:eval:Found in function table
+INFO:eval:args = ['x', '2', '(lambda z (setq x z))']
+INFO:closure:Variables = {}
+INFO:closure:closures = {0: {}, 3203: {}}
+INFO:closure:Currentclosure = 3203
+INFO:closure:Closurestack = [0, 3203]
+INFO:eval:Evaling 2
+INFO:eval:Have variables {}
+INFO:eval:Found int 2
+INFO:eval:Evaling (lambda z (setq x z))
+INFO:eval:Have variables {'x': 2}
+INFO:eval:function = lambda
+INFO:eval:Found in function table
+INFO:eval:args = ['z', '(setq x z)']
+INFO:eval:eval returns <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>> 
+INFO:closure:Variables = {'x': 2}
+INFO:closure:closures = {0: {}, 3203: {'x': 2}}
+INFO:closure:Currentclosure = 3203
+INFO:closure:Closurestack = [0, 3203]
+INFO:eval:eval returns <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>> 
+INFO:eval:Evaling (setq closure (let x 2 (lambda z (setq x z))))
+INFO:eval:Have variables {}
+INFO:eval:function = setq
+INFO:eval:Found in function table
+INFO:eval:args = ['closure', '(let x 2 (lambda z (setq x z)))']
+INFO:eval:Evaling (let x 2 (lambda z (setq x z)))
+INFO:eval:Have variables {}
+INFO:eval:function = let
+INFO:eval:Found in function table
+INFO:eval:args = ['x', '2', '(lambda z (setq x z))']
+INFO:closure:Variables = {}
+INFO:closure:closures = {0: {}, 3203: {'x': 2}, 15078: {}}
+INFO:closure:Currentclosure = 15078
+INFO:closure:Closurestack = [15078]
+INFO:eval:Evaling 2
+INFO:eval:Have variables {}
+INFO:eval:Found int 2
+INFO:eval:Evaling (lambda z (setq x z))
+INFO:eval:Have variables {'x': 2}
+INFO:eval:function = lambda
+INFO:eval:Found in function table
+INFO:eval:args = ['z', '(setq x z)']
+INFO:eval:eval returns <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>> 
+INFO:closure:Variables = {'x': 2}
+INFO:closure:closures = {0: {}, 3203: {'x': 2}, 15078: {'x': 2}}
+INFO:closure:Currentclosure = 15078
+INFO:closure:Closurestack = [15078]
+INFO:eval:eval returns <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>> 
+INFO:eval:eval returns <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>> 
+INFO:eval:Evaling (closure 10)
+INFO:eval:Have variables {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:eval:function = closure
+INFO:eval:Evaling closure
+INFO:eval:Have variables {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:eval:Found variable closure = <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>
+INFO:eval:Evaling closure
+INFO:eval:Have variables {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:eval:Found variable closure = <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>
+INFO:eval:Is a lambda function
+INFO:eval:Evaling 10
+INFO:eval:Have variables {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:eval:Found int 10
+INFO:eval:args = [10]
+INFO:closure:Variables = {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:closure:closures = {0: {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}, 3203: {'x': 2}, 15078: {'x': 2}}
+INFO:closure:Currentclosure = 0
+INFO:closure:Closurestack = []
+INFO:closure:Variables = {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:closure:closures = {0: {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}, 3203: {'x': 2}, 15078: {'x': 2}}
+INFO:closure:Currentclosure = 0
+INFO:closure:Closurestack = []
+INFO:closure:Variables = {'x': 2}
+INFO:closure:closures = {0: {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}, 3203: {'x': 2}, 21387: {'x': 2}, 15078: {'x': 2}}
+INFO:closure:Currentclosure = 21387
+INFO:closure:Closurestack = [21387]
+INFO:eval:Evaling (setq x z)
+INFO:eval:Have variables {'x': 2, 'z': 10}
+INFO:eval:function = setq
+INFO:eval:Found in function table
+INFO:eval:args = ['x', 'z']
+INFO:eval:Evaling z
+INFO:eval:Have variables {'x': 2, 'z': 10}
+INFO:eval:Found variable z = 10
+INFO:eval:eval returns 10 
+INFO:eval:eval returns 10 
+INFO:eval:Evaling (closure 15)
+INFO:eval:Have variables {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:eval:function = closure
+INFO:eval:Evaling closure
+INFO:eval:Have variables {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:eval:Found variable closure = <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>
+INFO:eval:Evaling closure
+INFO:eval:Have variables {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:eval:Found variable closure = <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>
+INFO:eval:Is a lambda function
+INFO:eval:Evaling 15
+INFO:eval:Have variables {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:eval:Found int 15
+INFO:eval:args = [15]
+INFO:closure:Variables = {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:closure:closures = {0: {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}, 3203: {'x': 2}, 21387: {'x': 10, 'z': 10}, 15078: {'x': 2}}
+INFO:closure:Currentclosure = 0
+INFO:closure:Closurestack = []
+INFO:closure:Variables = {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}
+INFO:closure:closures = {0: {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}, 3203: {'x': 2}, 21387: {'x': 10, 'z': 10}, 15078: {'x': 2}}
+INFO:closure:Currentclosure = 0
+INFO:closure:Closurestack = []
+INFO:closure:Variables = {'x': 2}
+INFO:closure:closures = {0: {'closure': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d0566c>>}, 3203: {'x': 2}, 21387: {'x': 10, 'z': 10}, 15078: {'x': 2}, 52079: {'x': 2}}
+INFO:closure:Currentclosure = 52079
+INFO:closure:Closurestack = [52079]
+INFO:eval:Evaling (setq x z)
+INFO:eval:Have variables {'x': 2, 'z': 15}
+INFO:eval:function = setq
+INFO:eval:Found in function table
+INFO:eval:args = ['x', 'z']
+INFO:eval:Evaling z
+INFO:eval:Have variables {'x': 2, 'z': 15}
+INFO:eval:Found variable z = 15
+INFO:eval:eval returns 15 
+INFO:eval:eval returns 15 

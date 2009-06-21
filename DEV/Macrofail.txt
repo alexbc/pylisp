@@ -1,0 +1,60 @@
+INFO:eval:Evaling (macro defun (name args function) (setq name (lambda args function)))
+INFO:eval:Have variables {}
+INFO:eval:function = macro
+INFO:eval:Found in function table
+INFO:eval:args = ['defun', '(name args function)', '(setq name (lambda args function))']
+INFO:eval:eval returns None 
+INFO:eval:Evaling (defun cheese (x y) (+ x y))
+INFO:eval:Have variables {}
+INFO:eval:function = defun
+INFO:eval:Evaling defun
+INFO:eval:Have variables {}
+ERROR:eval:Unknown symbol 'defun'
+INFO:eval:Is a macro
+INFO:eval:Macro body '(setq name (lambda args function))' arglist ['name', 'args', 'function'] args ['cheese', '(x y)', '(+ x y)']
+INFO:eval:Expanded to (setq cheese (lambda (x y) function))
+INFO:eval:Evaling (setq cheese (lambda (x y) function))
+INFO:eval:Have variables {}
+INFO:eval:function = setq
+INFO:eval:Found in function table
+INFO:eval:args = ['cheese', '(lambda (x y) function)']
+INFO:eval:Evaling (lambda (x y) function)
+INFO:eval:Have variables {}
+INFO:eval:function = lambda
+INFO:eval:Found in function table
+INFO:eval:args = ['(x y)', 'function']
+INFO:eval:eval returns <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>> 
+INFO:eval:eval returns <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>> 
+INFO:eval:Evaling (cheese 2 3)
+INFO:eval:Have variables {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}
+INFO:eval:function = cheese
+INFO:eval:Evaling cheese
+INFO:eval:Have variables {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}
+INFO:eval:Found variable cheese = <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>
+INFO:eval:Evaling cheese
+INFO:eval:Have variables {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}
+INFO:eval:Found variable cheese = <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>
+INFO:eval:Is a lambda function
+INFO:eval:Evaling 2
+INFO:eval:Have variables {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}
+INFO:eval:Found int 2
+INFO:eval:Evaling 3
+INFO:eval:Have variables {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}
+INFO:eval:Found int 3
+INFO:eval:args = [2, 3]
+INFO:closure:Variables = {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}
+INFO:closure:closures = {0: {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}}
+INFO:closure:Currentclosure = 0
+INFO:closure:Closurestack = [0]
+INFO:closure:Variables = {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}
+INFO:closure:closures = {0: {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}}
+INFO:closure:Currentclosure = 0
+INFO:closure:Closurestack = [0]
+INFO:closure:Variables = {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}
+INFO:closure:closures = {0: {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}, 62044: {'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>}}
+INFO:closure:Currentclosure = 62044
+INFO:closure:Closurestack = [0, 62044]
+INFO:eval:Evaling function
+INFO:eval:Have variables {'y': 3, 'cheese': <bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7c96b0c>>, 'x': 2}
+ERROR:eval:Unknown symbol 'function'
+INFO:eval:eval returns None 
