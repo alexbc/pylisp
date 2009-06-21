@@ -1,6 +1,0 @@
-INFO:eval:Evaling [A[D
-INFO:eval:Have variables {}
-ERROR:eval:Unknown symbol '[A[D'
-INFO:eval:Evaling [A
-INFO:eval:Have variables {}
-ERROR:eval:Unknown symbol '[A'

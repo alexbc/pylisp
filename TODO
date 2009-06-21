@@ -1,4 +1,4 @@
-Seperate everything into core + functions + REPL
+Seperate everything into core + functions + REPL - Done
 
 add \ as an escape character to the parser - Done
 
@@ -6,11 +6,11 @@ Check closures are working properly - Update variables in a closure, make sure t
 
 Fix let syntax -> Make it normal lisp
 
-Fix macro substitution -> do substitition around brackets too (add two more cases)
+Fix macro substitution -> do substitition around brackets too (add two more cases) - Done (needs tests)
 INFO:eval:Macro body '(setq name (lambda args function))' arglist ['name', 'args', 'function'] args ['cheese', '(x y)', '(+ x y)']
 INFO:eval:Expanded to (setq cheese (lambda (x y) function))
 
-macro fails badly when you give it the wrong number of arguments.
+macro fails badly when you give it the wrong number of arguments. - Done
 It shouldn't
 
 Support inline comments
