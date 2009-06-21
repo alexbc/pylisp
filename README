@@ -1,7 +1,14 @@
-Simple python lisp interpreter
+Ulisp, a simple python lisp interpreter
 
-Kind of working, has seen better days.
+Currently mostly working, with support for:
+Closures/lambdas
+normal s-expressions
+macros
+as well as
+Strings/ints/booleans/functions/lists/etc.
 
-Currently supports quite a few different operations.
+Lacking a little in terms of primitives, however it is working and is kind of useful.
 
-Use at your own risk
+It could use a lot more testing though, and there are not guarantees that this will actually work in any way shape or form.
+
+Licenced under the GPL version 3
