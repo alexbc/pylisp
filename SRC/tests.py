@@ -1,6 +1,7 @@
 import ulispcore
 import unittest
 
+#testing module, used to give everything unit tests 
 class coretests(unittest.TestCase):
 	def setUp(self):
 		self.samplecases = (("(+ 1 4)", 5, "Testing adding"),

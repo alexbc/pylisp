@@ -13,6 +13,9 @@ INFO:eval:Expanded to (setq cheese (lambda (x y) function))
 macro fails badly when you give it the wrong number of arguments. - Done
 It shouldn't
 
-Support inline comments
+Support inline comments 
+- Preprocess input to remove any comments/consolidate whitespace/etc.
+? Done
 
-Get rid of the annoying "Unknown symbol" errors. change to info?
+
+Get rid of the annoying "Unknown symbol" errors. change to info? - Done

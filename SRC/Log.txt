@@ -1,0 +1,31 @@
+INFO:eval:Evaling (+ 1 2 3);blah
+INFO:parser:Parsing '(+ 1 2 3);blah'
+INFO:parser:Parsed = ['(+ 1 2 3)']
+INFO:eval:preprocessed to (+ 1 2 3)
+INFO:eval:Have variables {}
+INFO:parser:Parsing '(+ 1 2 3)'
+INFO:parser:Parsed = ['(+ 1 2 3)']
+INFO:parser:Parsing '+ 1 2 3'
+INFO:parser:Parsed = ['+', '1', '2', '3']
+INFO:eval:function = +
+INFO:eval:Found in function table
+INFO:eval:Evaling 1
+INFO:parser:Parsing '1'
+INFO:parser:Parsed = ['1']
+INFO:eval:preprocessed to 1
+INFO:eval:Have variables {}
+INFO:eval:Found int 1
+INFO:eval:Evaling 2
+INFO:parser:Parsing '2'
+INFO:parser:Parsed = ['2']
+INFO:eval:preprocessed to 2
+INFO:eval:Have variables {}
+INFO:eval:Found int 2
+INFO:eval:Evaling 3
+INFO:parser:Parsing '3'
+INFO:parser:Parsed = ['3']
+INFO:eval:preprocessed to 3
+INFO:eval:Have variables {}
+INFO:eval:Found int 3
+INFO:eval:args = [1, 2, 3]
+INFO:eval:eval returns 6 

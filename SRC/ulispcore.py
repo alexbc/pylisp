@@ -149,19 +149,36 @@ def macroexpand(body, arglist, args):
 	return body
 
 
+def preprocess(inp):
+	"""Preprocess input to remove any odd characters, and make things easier later on"""
+	return " ".join(simpletreeparse(inp))
 
 #the guts of it, simpletreeparse
 def simpletreeparse(inp):
-	"""Very simple Tree parser to seperate out sublists from lists"""
+        """Finite State Automata for parsing input into its constituant arguments"""
+	global logging
+        logger = logging.getLogger("parser")
+	logger.info("Parsing %r", inp)
+
 	numbrackets = 0
 	slab = ""
 	slabs = []
 	quotes = False
 	WHITESPACE = [' ', '\t', '\n']
 	ESCAPECHAR = '\\'
+	COMMENT = ";"
+	commenting = False
 	escaped = False
 
 	for i in inp:
+		if i == COMMENT or commenting: #new commenting code, needs testing
+			if i == "\n": #its a newline, reset comments
+				commenting = False
+			else:
+				commenting = True #its a commment, so 
+	                        continue #we really don't care what is happening
+
+
 		if i == ESCAPECHAR:
 			escaped = True
 			continue #its escaped so don't worry about this character and treat the next one as text
@@ -192,6 +209,7 @@ def simpletreeparse(inp):
 
 	slabs = [x.strip() for x in slabs] #get rid of any dangling whitespace
 	slabs = [x for x in slabs if x != ""] #and get rid of any null entries
+	logger.info("Parsed = %r", slabs)
 	return slabs
 
 
@@ -203,7 +221,10 @@ def eval(inp):
 	logger = logging.getLogger("eval")
 
 	logger.info("Evaling %s" ,inp)
+	inp = preprocess(inp)
+	logger.info("preprocessed to %s", inp)
 	logger.info("Have variables %r" , variables)
+
         if inp.count("(") != inp.count(")"): #there is at least one mismatched bracket
 		logger.error("Mismatched brackets!")
 		return
