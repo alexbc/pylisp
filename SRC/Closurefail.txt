@@ -1,0 +1,6 @@
+>> (setq myclosure (let y 2 (lambda x (+ x y))))
+<bound method lambdafunction.run of <__main__.lambdafunction instance at 0xb7d40d0c>>
+>> (myclosure 5)
+7
+>> (myclosure 2)
+4

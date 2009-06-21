@@ -1,4 +1,18 @@
 Seperate everything into core + functions + REPL
 
-add \ as an escape character to the parser
+add \ as an escape character to the parser - Done
 
+Check closures are working properly - Update variables in a closure, make sure they stay updated. Multi statement closures
+
+Fix let syntax -> Make it normal lisp
+
+Fix macro substitution -> do substitition around brackets too (add two more cases)
+INFO:eval:Macro body '(setq name (lambda args function))' arglist ['name', 'args', 'function'] args ['cheese', '(x y)', '(+ x y)']
+INFO:eval:Expanded to (setq cheese (lambda (x y) function))
+
+macro fails badly when you give it the wrong number of arguments.
+It shouldn't
+
+Support inline comments
+
+Get rid of the annoying "Unknown symbol" errors. change to info?

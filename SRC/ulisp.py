@@ -103,11 +103,18 @@ def simpletreeparse(inp):
 	slabs = []
 	quotes = False
 	WHITESPACE = [' ', '\t', '\n']
+	ESCAPECHAR = '\\'
+	escaped = False
+
 	for i in inp:
-		if i == "(" and not quotes:
+		if i == ESCAPECHAR:
+			escaped = True
+			continue #its escaped so don't worry about this character and treat the next one as text
+
+		if i == "(" and not quotes and not escaped:
 			numbrackets += 1
 			slab += i
-		elif i == ")" and not quotes:
+		elif i == ")" and not quotes and not escaped:
 			numbrackets -= 1
 			slab += i
 			if numbrackets == 0: #if, we've just closed brackets and are now on the last scope
@@ -121,15 +128,15 @@ def simpletreeparse(inp):
 					slab = ""
 			else:
 				slab += i
-			if i == '"':
+			if i == '"' and not escaped:
 				quotes = not quotes
+		escaped = False
 
 	if slab != "":
 		slabs.append(slab)
 
 	slabs = [x.strip() for x in slabs] #get rid of any dangling whitespace
 	slabs = [x for x in slabs if x != ""] #and get rid of any null entries
-
 	return slabs
 
 def eq(args):
@@ -299,8 +306,9 @@ def eval(inp):
 		inp = inp[1:]
 		logger.info("Found quote '%s", inp)
 		return simpletreeparse(inp)
-
-	if inp[0] == '"' and inp[-1] == '"' and inp.count('"') == 2: #its a double quoted string
+	
+	#why was the inp.count('"') == 2 here?
+	if inp[0] == '"' and inp[-1] == '"': #its a double quoted string
 		inp = inp[1:-1]
 		logger.info("Found quoted string '%s'", inp)
 		return inp
@@ -341,7 +349,7 @@ def eval(inp):
 
 
 def macroexpand(body, arglist, args):
-	"""Expand macros, todo: FIXME"""
+	"""Expand macros, todo: very hackish method, change."""
 	global logging
         logger = logging.getLogger("eval")
         logger.info("Macro body %r arglist %r args %r", body, arglist, args)
@@ -352,6 +360,10 @@ def macroexpand(body, arglist, args):
 
 	for i in range(len(arglist)):
 		body = body.replace(" " + arglist[i] + " ", " " + args[i] + " ")
+		body = body.replace(" " + arglist[i] + ")", " " + args[i] + ")")
+		body = body.replace("(" + arglist[i] + " ", "(" + args[i] + " ")
+		body = body.replace("(" + arglist[i] + ")", "(" + args[i] + ")")
+
 
 	logger.info("Expanded to %s", body)
 	return body
@@ -376,8 +388,8 @@ def usage():
 	print """Usage
 	-h (help) For help (this message)
 	-i (interactive) for  REPL (default)
-	-r (run) to run an expression and exit
-	-f (file) to run from a file and exit
+	-e (evaluate) to run an expression and exit
+	-r (run) to run from a file and exit
 	-d (debug) to change the debug settings from default
 	-p (prelude) run file before starting the REPL
 	-l (logfile) change output log file
@@ -416,7 +428,7 @@ def setupdebug(debugmode):
 def main(argv):
 	global LOG_FILE
 	try:
-        	opts, args = getopt.getopt(argv, "hifdrpl", ["help", "interactive", "file=", "debug=", "run=", "prelude=", "logfile="])
+        	opts, args = getopt.getopt(argv, "hifdrple", ["help", "interactive", "file=", "debug=", "run=", "prelude=", "logfile=", "eval="])
 	except getopt.GetoptError, err:
 		usage() #if they give us bad arguments, give them a usage message
 	
@@ -438,6 +450,10 @@ def main(argv):
 			runfile(a)
 		elif o == "--logfile":
 			LOG_FILE = a
+		elif o == "--eval":
+			expr = a
+			print eval(expr)
+			sys.exit()
 	
 	#once everything is processed, set up the log files and run the REPL
 	setupdebug(debugmode)
