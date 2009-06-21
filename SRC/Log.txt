@@ -1,31 +1,95 @@
-INFO:eval:Evaling (+ 1 2 3);blah
-INFO:parser:Parsing '(+ 1 2 3);blah'
-INFO:parser:Parsed = ['(+ 1 2 3)']
-INFO:eval:preprocessed to (+ 1 2 3)
+INFO:eval:Evaling (lambda (x) (+ 2 x))
+INFO:parser:Parsing '(lambda (x) (+ 2 x))'
+INFO:parser:Parsed = ['(lambda (x) (+ 2 x))']
+INFO:eval:preprocessed to (lambda (x) (+ 2 x))
 INFO:eval:Have variables {}
-INFO:parser:Parsing '(+ 1 2 3)'
-INFO:parser:Parsed = ['(+ 1 2 3)']
-INFO:parser:Parsing '+ 1 2 3'
-INFO:parser:Parsed = ['+', '1', '2', '3']
+INFO:parser:Parsing '(lambda (x) (+ 2 x))'
+INFO:parser:Parsed = ['(lambda (x) (+ 2 x))']
+INFO:parser:Parsing 'lambda (x) (+ 2 x)'
+INFO:parser:Parsed = ['lambda', '(x)', '(+ 2 x)']
+INFO:eval:function = lambda
+INFO:eval:Found in function table
+INFO:eval:args = ['(x)', '(+ 2 x)']
+INFO:eval:eval returns <bound method lambdafunction.run of <ulispcore.lambdafunction instance at 0x97ed72c>> 
+INFO:eval:Evaling ((lambda (x) (+ 2 x)) 4)
+INFO:parser:Parsing '((lambda (x) (+ 2 x)) 4)'
+INFO:parser:Parsed = ['((lambda (x) (+ 2 x)) 4)']
+INFO:eval:preprocessed to ((lambda (x) (+ 2 x)) 4)
+INFO:eval:Have variables {}
+INFO:parser:Parsing '((lambda (x) (+ 2 x)) 4)'
+INFO:parser:Parsed = ['((lambda (x) (+ 2 x)) 4)']
+INFO:parser:Parsing '(lambda (x) (+ 2 x)) 4'
+INFO:parser:Parsed = ['(lambda (x) (+ 2 x))', '4']
+INFO:eval:function = (lambda (x) (+ 2 x))
+INFO:eval:Evaling (lambda (x) (+ 2 x))
+INFO:parser:Parsing '(lambda (x) (+ 2 x))'
+INFO:parser:Parsed = ['(lambda (x) (+ 2 x))']
+INFO:eval:preprocessed to (lambda (x) (+ 2 x))
+INFO:eval:Have variables {}
+INFO:parser:Parsing '(lambda (x) (+ 2 x))'
+INFO:parser:Parsed = ['(lambda (x) (+ 2 x))']
+INFO:parser:Parsing 'lambda (x) (+ 2 x)'
+INFO:parser:Parsed = ['lambda', '(x)', '(+ 2 x)']
+INFO:eval:function = lambda
+INFO:eval:Found in function table
+INFO:eval:args = ['(x)', '(+ 2 x)']
+INFO:eval:eval returns <bound method lambdafunction.run of <ulispcore.lambdafunction instance at 0x97f30ec>> 
+INFO:eval:Evaling (lambda (x) (+ 2 x))
+INFO:parser:Parsing '(lambda (x) (+ 2 x))'
+INFO:parser:Parsed = ['(lambda (x) (+ 2 x))']
+INFO:eval:preprocessed to (lambda (x) (+ 2 x))
+INFO:eval:Have variables {}
+INFO:parser:Parsing '(lambda (x) (+ 2 x))'
+INFO:parser:Parsed = ['(lambda (x) (+ 2 x))']
+INFO:parser:Parsing 'lambda (x) (+ 2 x)'
+INFO:parser:Parsed = ['lambda', '(x)', '(+ 2 x)']
+INFO:eval:function = lambda
+INFO:eval:Found in function table
+INFO:eval:args = ['(x)', '(+ 2 x)']
+INFO:eval:eval returns <bound method lambdafunction.run of <ulispcore.lambdafunction instance at 0x97f30ec>> 
+INFO:eval:Is a lambda function
+INFO:eval:Evaling 4
+INFO:parser:Parsing '4'
+INFO:parser:Parsed = ['4']
+INFO:eval:preprocessed to 4
+INFO:eval:Have variables {}
+INFO:eval:Found int 4
+INFO:eval:args = [4]
+INFO:closure:Variables = {}
+INFO:closure:closures = {0: {}}
+INFO:closure:Currentclosure = 0
+INFO:closure:Closurestack = [0]
+INFO:closure:Variables = {}
+INFO:closure:closures = {0: {}}
+INFO:closure:Currentclosure = 0
+INFO:closure:Closurestack = [0]
+INFO:closure:Variables = {}
+INFO:closure:closures = {0: {}, 55675: {}}
+INFO:closure:Currentclosure = 55675
+INFO:closure:Closurestack = [0, 55675]
+INFO:eval:Evaling (+ 2 x)
+INFO:parser:Parsing '(+ 2 x)'
+INFO:parser:Parsed = ['(+ 2 x)']
+INFO:eval:preprocessed to (+ 2 x)
+INFO:eval:Have variables {'x': 4}
+INFO:parser:Parsing '(+ 2 x)'
+INFO:parser:Parsed = ['(+ 2 x)']
+INFO:parser:Parsing '+ 2 x'
+INFO:parser:Parsed = ['+', '2', 'x']
 INFO:eval:function = +
 INFO:eval:Found in function table
-INFO:eval:Evaling 1
-INFO:parser:Parsing '1'
-INFO:parser:Parsed = ['1']
-INFO:eval:preprocessed to 1
-INFO:eval:Have variables {}
-INFO:eval:Found int 1
 INFO:eval:Evaling 2
 INFO:parser:Parsing '2'
 INFO:parser:Parsed = ['2']
 INFO:eval:preprocessed to 2
-INFO:eval:Have variables {}
+INFO:eval:Have variables {'x': 4}
 INFO:eval:Found int 2
-INFO:eval:Evaling 3
-INFO:parser:Parsing '3'
-INFO:parser:Parsed = ['3']
-INFO:eval:preprocessed to 3
-INFO:eval:Have variables {}
-INFO:eval:Found int 3
-INFO:eval:args = [1, 2, 3]
+INFO:eval:Evaling x
+INFO:parser:Parsing 'x'
+INFO:parser:Parsed = ['x']
+INFO:eval:preprocessed to x
+INFO:eval:Have variables {'x': 4}
+INFO:eval:Found variable x = 4
+INFO:eval:args = [2, 4]
+INFO:eval:eval returns 6 
 INFO:eval:eval returns 6 
